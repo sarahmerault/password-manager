@@ -10,6 +10,12 @@ index.use(cors({
     origin:'http://localhost:5173'
 }))
 
+
+
+
+
+
+
 const PORT = process.env.PORT || 5000;
 
 index.listen(PORT, () => {

@@ -1,7 +1,13 @@
 import path from 'path';
 import Database from 'better-sqlite3';
 
-const database = new Database('foobar.db', options);
+
+
+let database;
+
+
+
+const __dirname = import.meta.dirname;
 const DATABASE_PATH = path.join(__dirname, "../../data/password-manager.db");
 
 
@@ -9,6 +15,7 @@ const DATABASE_PATH = path.join(__dirname, "../../data/password-manager.db");
 
 export function getDatabase() {
     if (database) {
+        
         return database;
     }
 
@@ -17,7 +24,11 @@ export function getDatabase() {
     database.pragma("foreign_keys = ON");
     initializeTables(database);
 
+    console.log("Database initaliser");
+
     return database;
+
+
 }
 
 
@@ -26,22 +37,22 @@ function initializeTables(database) {
     database.exec(`
     
 CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_email TEXT UNIQUE NOT NULL,
-    auth_hash TEXT NOT NULL,
-    salt TEXT NOT NULL,
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    user_email VARCHAR(255) UNIQUE NOT NULL,
+    auth_hash VARCHAR(255) NOT NULL,
+    salt VARCHAR(100) NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS entries (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
     user_id INTEGER NOT NULL,
-    username TEXT NOT NULL,
-    email TEXT NOT NULL,
-    service_name TEXT NOT NULL,
-    encrypted_data TEXT NOT NULL,
-    iv TEXT NOT NULL,
+    username VARCHAR(255),
+    email VARCHAR(255),
+    service_name VARCHAR(255) NOT NULL,
+    encrypted_data VARCHAR(255) NOT NULL,
+    iv VARCHAR(255) NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
