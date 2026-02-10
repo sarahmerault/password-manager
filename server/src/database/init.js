@@ -1,17 +1,18 @@
 import path from 'path';
 import Database from 'better-sqlite3';
-import fs from "fs";
+
 
 
 let database;
 
-//crée le chemin pour la db 
+
+
 const __dirname = import.meta.dirname;
-const DATABASE_PATH = path.join(__dirname, "../../../data/password-manager.db");
-const database_init= path.join(__dirname, "../../../data/init.sql")
+const DATABASE_PATH = path.join(__dirname, "../../data/password-manager.db");
 
 
-//Singleton, crée la fonction si elle n'est pas deja existante 
+
+
 export function getDatabase() {
     if (database) {
         
@@ -19,7 +20,6 @@ export function getDatabase() {
     }
 
     database = new Database(DATABASE_PATH);
-    //mettre des setting "pragma" ( recommander, par defaut)
     database.pragma("journal_mode = WAL");
     database.pragma("foreign_keys = ON");
     initializeTables(database);
@@ -31,12 +31,32 @@ export function getDatabase() {
 
 }
 
-//recuprer la db 
-const sql = fs.readFileSync(database_init, "utf-8");
 
-//initialiser la db
+
 function initializeTables(database) {
-    database.exec(sql);
+    database.exec(`
+    
+CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    user_email VARCHAR(255) UNIQUE NOT NULL,
+    auth_hash VARCHAR(255) NOT NULL,
+    salt VARCHAR(100) NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS entries (
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    user_id INTEGER NOT NULL,
+    username VARCHAR(255),
+    email VARCHAR(255),
+    service_name VARCHAR(255) NOT NULL,
+    encrypted_data VARCHAR(255) NOT NULL,
+    iv VARCHAR(255) NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);`);
 }
 
 export { database }
