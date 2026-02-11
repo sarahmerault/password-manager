@@ -1,6 +1,7 @@
 import express from 'express'
 import 'dotenv/config'
 import cors from 'cors'
+import { getDatabase } from './database/init.js';
 
  
 
@@ -12,7 +13,7 @@ index.use(cors({
 
 
 
-
+getDatabase()
 
 
 

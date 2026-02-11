@@ -1,5 +1,7 @@
 import path from 'path';
 import Database from 'better-sqlite3';
+import fs from "fs";
+
 
 
 
@@ -8,8 +10,9 @@ let database;
 
 
 const __dirname = import.meta.dirname;
-const DATABASE_PATH = path.join(__dirname, "../../data/password-manager.db");
 
+const DATABASE_PATH = path.join(__dirname, "../../../data/password-manager.db");
+const database_init= path.join(__dirname, "../../../data/init.sql")
 
 
 
@@ -30,33 +33,12 @@ export function getDatabase() {
 
 
 }
+const sql = fs.readFileSync(database_init, "utf-8");
 
 
 
 function initializeTables(database) {
-    database.exec(`
-    
-CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    user_email VARCHAR(255) UNIQUE NOT NULL,
-    auth_hash VARCHAR(255) NOT NULL,
-    salt VARCHAR(100) NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS entries (
-    id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    user_id INTEGER NOT NULL,
-    username VARCHAR(255),
-    email VARCHAR(255),
-    service_name VARCHAR(255) NOT NULL,
-    encrypted_data VARCHAR(255) NOT NULL,
-    iv VARCHAR(255) NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);`);
+    database.exec(sql)
 }
 
 export { database }
