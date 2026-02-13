@@ -1,25 +1,29 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+import Register from "./pages/Register";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+import "./styles/global.css";
 
-import './App.css'
-import {BrowserRouter,Route,Routes} from "react-router-dom"
-import Register from './pages/auth/Register'
-import Login from './pages/auth/Login'
-import Dashboard from './pages/auth/Dashboard'
 
 
 function App() {
- 
-
   return (
     <BrowserRouter>
-    <Routes>
-      <Route path="/" element={<Register/>}/>
-      <Route path="/login" element={<Login/>}/>
-      <Route path ="/dashboard" element={<Dashboard/>}/>
+      <Header />
 
-    </Routes>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+      </Routes>   
+
+      <Footer />
     </BrowserRouter>
-  
   )
 }
 
-export default App
+
+export default App;
+
